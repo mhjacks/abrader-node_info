@@ -14,8 +14,10 @@ module Puppet::Parser::Functions
     raise ArgumentError, 'Function accepts a single String' unless args.length == 1 && args[0].is_a?(String)
 
     node_name = args[0]
-    ng     = Puppet::Util::Nc_https.new
-    groups = ng.get_groups
+    ng = Puppet::Util::Nc_https.new
+    # groups = ng.get_groups
+
+    ngroups = []
 
     # When querying a specific group
     if args.length == 1
@@ -24,11 +26,11 @@ module Puppet::Parser::Functions
       Puppet::Type.type(:node_group)
       Puppet::Type::Node_group::ProviderHttps.instances
 
-      groups = raw['groups'].map do |group|
+      raw['groups'].map do |group|
         gindex = Puppet::Type::Node_group::ProviderHttps.get_name_index_from_id(group)
-        $ngs[gindex]['name']
+        ngroups << Hash[$ngs[gindex]['name'] => $ngs[gindex]['id'].to_s]
       end
     end
-    groups.to_json
+    ngroups.to_json
   end
 end
