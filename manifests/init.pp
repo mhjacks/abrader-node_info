@@ -2,7 +2,7 @@
 class node_info (
   Stdlib::Absolutepath $node_info_file = '/tmp/node_info.json',
 ){
-  $node_groups = node_info($trusted['certname'])
+  $node_groups = node_info($trusted['certname'], { 'fact' => $facts }, { 'trusted' => $trusted })
 
   file { $node_info_file :
     ensure  => file,

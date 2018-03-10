@@ -1,6 +1,7 @@
 {
   "<%= $::trusted['certname'] -%>": {
     "node_groups": <%= $::node_info::node_groups %>,
+    "environment': <%= $::environment %>,
     "classes": <%= $facts['classes'] %>
   }
 }
