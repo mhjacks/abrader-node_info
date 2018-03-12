@@ -1,14 +1,14 @@
 # This class must be classified to produce node information file
 class node_info (
-  Stdlib::Absolutepath $node_info_file = '/tmp/node_info.json',
+  Stdlib::Absolutepath $node_groups_file = $facts['kernel'] ? {
+    'windows' => 'C:/ProgramData/PuppetLabs/facter/facts.d/lastrun_node_groups.json',
+    default   => '/etc/facter/facts.d/lastrun_node_groups.json',
+  },
 ){
-  $node_groups = node_info($trusted['certname'])
+  $node_groups = node_info($trusted['certname'], { 'fact' =>  $facts }, { 'trusted' => $trusted })
 
-  file { $node_info_file :
+  file { $node_groups_file :
     ensure  => file,
-    content => epp('node_info/node_info.json.epp'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0600',
+    content => inline_template("{ \"lastrun_node_groups\": <%= @node_groups %> }\n"),
   }
 }
