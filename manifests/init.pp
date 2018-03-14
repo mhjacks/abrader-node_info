@@ -12,3 +12,4 @@ class node_info (
     content => inline_template("{ \"lastrun_node_groups\": <%= @node_groups %> }\n"),
   }
 }
+

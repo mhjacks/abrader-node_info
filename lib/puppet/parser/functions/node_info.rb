@@ -33,3 +33,4 @@ module Puppet::Parser::Functions
     ngroups.to_json
   end
 end
+
