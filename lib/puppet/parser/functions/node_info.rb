@@ -11,25 +11,24 @@ end
 # Retrieves node information to be parsed by 3rd party products
 module Puppet::Parser::Functions
   newfunction(:node_info, type: :rvalue) do |args|
-    raise ArgumentError, 'Function accepts a single String' unless args.length == 1 && args[0].is_a?(String)
-
     node_name = args[0]
+    node_facts = args[1]
+    node_trusted = args[2]
+
     ng = Puppet::Util::Nc_https.new
     # groups = ng.get_groups
 
     ngroups = []
 
     # When querying a specific group
-    if args.length == 1
-      raw = ng.get_classified(node_name)
+    raw = ng.get_classified(node_name, false, node_facts, node_trusted)
 
-      Puppet::Type.type(:node_group)
-      Puppet::Type::Node_group::ProviderHttps.instances
+    Puppet::Type.type(:node_group)
+    Puppet::Type::Node_group::ProviderHttps.instances
 
-      raw['groups'].map do |group|
-        gindex = Puppet::Type::Node_group::ProviderHttps.get_name_index_from_id(group)
-        ngroups << Hash[$ngs[gindex]['name'] => $ngs[gindex]['id'].to_s]
-      end
+    raw['groups'].map do |group|
+      gindex = Puppet::Type::Node_group::ProviderHttps.get_name_index_from_id(group)
+      ngroups << Hash[$ngs[gindex]['name'] => $ngs[gindex]['id'].to_s]
     end
     ngroups.to_json
   end
